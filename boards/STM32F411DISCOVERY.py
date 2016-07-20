@@ -15,11 +15,11 @@
 
 import pinutils;
 info = {
- 'name' : "STM32 F4 Discovery",
+ 'name' : "STM32 F411 Discovery",
  'link' :  [ "http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1199/PF252419" ],
  'default_console' : "EV_SERIAL2", # FIXME: This was S2 because of pin conflict. Not sure if it's really an issue?
  'variables' : 5450,
- 'binary_name' : 'espruino_%v_stm32f4discovery.bin',
+ 'binary_name' : 'espruino_%v_stm32f411discovery.bin',
  'build' : {
   'defines' : [
      'USE_GRAPHICS',
@@ -30,7 +30,7 @@ info = {
 chip = {
   'part' : "STM32F411RET6",
   'family' : "STM32F4",
-  'package' : "LQFP64",
+  'package' : "LQFP100",
   'ram' : 128, # 0x0001 8000 long, from 0x2000 0000 to 0x2001 7FFF
   'flash' : 512, # 0x0008 0000 long, from 0x0800 0000 to 0x0807 FFFF
   'speed' : 100,
