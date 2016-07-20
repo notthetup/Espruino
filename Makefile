@@ -66,7 +66,7 @@
 #					      # GENDIR=/home/mydir/mygendir
 # SETDEFINES=FileDefines  # settings which are called after definitions for board are done
 #                         # SETDEFINES=/home/mydir/myDefines
-# UNSUPPORTEDMAKE=FileUnsu# Adds additional files from unsupported sources(means not supported by Gordon) to actual make 
+# UNSUPPORTEDMAKE=FileUnsu# Adds additional files from unsupported sources(means not supported by Gordon) to actual make
 #                         # UNSUPPORTEDMAKE=/home/mydir/unsupportedCommands
 # PROJECTNAME=myBigProject# Sets projectname
 # BLACKLIST=fileBlacklist # Removes javascript commands given in a file from compilation and therefore from project defined firmware
@@ -388,6 +388,16 @@ STLIB=STM32F407xx
 PRECOMPILED_OBJS+=$(ROOT)/targetlibs/stm32f4/lib/startup_stm32f40_41xxx.o
 OPTIMIZEFLAGS+=-O3
 
+else ifdef STM32F411DISCOVERY
+EMBEDDED=1
+USE_NET=1
+USE_GRAPHICS=1
+DEFINES += -DUSE_USB_OTG_FS=1
+BOARD=STM32F411DISCOVERY
+STLIB=STM32F411xE
+PRECOMPILED_OBJS+=$(ROOT)/targetlibs/stm32f4/lib/startup_stm32f401xx.o
+OPTIMIZEFLAGS+=-O3
+
 else ifdef STM32F401CDISCOVERY
 EMBEDDED=1
 USE_NET=1
@@ -663,7 +673,7 @@ USE_HASHLIB=1
 USE_GRAPHICS=1
 USE_CRYPTO=1
 USE_TLS=1
-USE_TELNET=1 
+USE_TELNET=1
 #USE_LCD_SDL=1
 
 ifdef MACOSX
@@ -678,7 +688,7 @@ endif
 endif
 endif
 
-#set or reset defines like USE_GRAPHIC from an external file to customize firmware 
+#set or reset defines like USE_GRAPHIC from an external file to customize firmware
 ifdef SETDEFINES
 include $(SETDEFINES)
 endif
@@ -868,11 +878,11 @@ INCLUDE += -I$(ROOT)/libs/math
 WRAPPERSOURCES += libs/math/jswrap_math.c
 ifeq ($(FAMILY),ESP8266)
 # special ESP8266 maths lib that doesn't go into RAM
-LIBS += -lmirom 
+LIBS += -lmirom
 LDFLAGS += -L$(ROOT)/targets/esp8266
 else
 # everything else uses normal maths lib
-LIBS += -lm 
+LIBS += -lm
 endif
 endif
 
@@ -1081,7 +1091,7 @@ libs/crypto/mbedtls/library/cipher_wrap.c \
 libs/crypto/mbedtls/library/md.c \
 libs/crypto/mbedtls/library/md_wrap.c \
 libs/crypto/mbedtls/library/oid.c \
-libs/crypto/mbedtls/library/pkcs5.c 
+libs/crypto/mbedtls/library/pkcs5.c
 endif
 endif
 
@@ -1276,7 +1286,7 @@ ifeq ($(FAMILY), NRF51)
 
   NRF5X=1
   NRF5X_SDK_PATH=$(ROOT)/targetlibs/nrf5x/nrf5_sdk
-  
+
   # ARCHFLAGS are shared by both CFLAGS and LDFLAGS.
   ARCHFLAGS = -mcpu=cortex-m0 -mthumb -mabi=aapcs -mfloat-abi=soft # Use nRF51 makefiles provided in SDK as reference.
 
@@ -1298,7 +1308,7 @@ ifeq ($(FAMILY), NRF51)
   NRF_BOOTLOADER    = $(ROOT)/targetlibs/nrf5x/nrf5_singlebank_bl_hex/nrf51_s130_singlebank_bl.hex
   NFR_BL_START_ADDR = 0x3C000
   NRF_BOOTLOADER_SETTINGS = $(ROOT)/targetlibs/nrf5x/nrf5_singlebank_bl_hex/bootloader_settings_nrf51.hex # This file writes 0x3FC00 with 0x01 so we can flash the application with the bootloader.
-  
+
   endif
 
 endif # FAMILY == NRF51
@@ -1311,9 +1321,9 @@ ifeq ($(FAMILY), NRF52)
   # ARCHFLAGS are shared by both CFLAGS and LDFLAGS.
   ARCHFLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mlittle-endian -mfpu=fpv4-sp-d16 # compile flags as used for Pico
   # Below are the flags used by nRF52 makefiles. This breaks the argument packing done by jsnative.c on newer GCC versions
-  # Compile with 'DEBUG=1 NRF52832DK=1 make', and check whether you get warnings at startup 
+  # Compile with 'DEBUG=1 NRF52832DK=1 make', and check whether you get warnings at startup
   #ARCHFLAGS = -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16
- 
+
   # nRF52 specific.
   INCLUDE          += -I$(NRF5X_SDK_PATH)/../nrf52_config
   INCLUDE          += -I$(NRF5X_SDK_PATH)/components/softdevice/s132/headers
@@ -1420,7 +1430,7 @@ ifdef NRF5X
   ARM = 1
   ARM_HAS_OWN_CMSIS = 1 # Nordic uses its own CMSIS files in its SDK, these are up-to-date.
   INCLUDE += -I$(ROOT)/targetlibs/nrf5x -I$(NRF5X_SDK_PATH)
-  
+
   TEMPLATE_PATH = $(ROOT)/targetlibs/nrf5x/nrf5x_linkers # This is where the common linker for both nRF51 & nRF52 is stored.
   LDFLAGS += -L$(TEMPLATE_PATH)
 
@@ -1478,7 +1488,7 @@ ifdef NRF5X
   $(NRF5X_SDK_PATH)/components/softdevice/common/softdevice_handler/softdevice_handler.c \
   $(NRF5X_SDK_PATH)/components/drivers_nrf/hal/nrf_nvmc.c \
   $(NRF5X_SDK_PATH)/components/drivers_nrf/twi_master/nrf_drv_twi.c \
-  $(NRF5X_SDK_PATH)/components/drivers_nrf/hal/nrf_adc.c 
+  $(NRF5X_SDK_PATH)/components/drivers_nrf/hal/nrf_adc.c
   # $(NRF5X_SDK_PATH)/components/libraries/util/nrf_log.c
 
   ifdef USE_BOOTLOADER
@@ -1640,7 +1650,7 @@ else ifdef EFM32
  LDFLAGS += $(OPTIMIZEFLAGS) $(ARCHFLAGS)
  LDFLAGS += -Wl,--start-group -lgcc -lc -lnosys -Wl,--end-group
 else
- LDFLAGS += $(OPTIMIZEFLAGS) $(ARCHFLAGS) 
+ LDFLAGS += $(OPTIMIZEFLAGS) $(ARCHFLAGS)
 endif
 
 ifdef EMBEDDED
@@ -1692,7 +1702,7 @@ ESPTOOL    ?= $(ESP8266_SDK_ROOT)/esptool/esptool.py
 INCLUDE += -I$(ESP8266_SDK_ROOT)/include -I$(ROOT)/targets/esp8266
 endif # ESP8266
 
-# Adds additional files from unsupported sources(means not supported by Gordon) to actual make 
+# Adds additional files from unsupported sources(means not supported by Gordon) to actual make
 ifdef UNSUPPORTEDMAKE
 include $(UNSUPPORTEDMAKE)
 endif
@@ -1731,7 +1741,7 @@ ifdef USE_NET
         # hack to ensure that Pico/etc have all possible firmware configs listed
 	$(Q)python scripts/build_board_json.py $(WRAPPERSOURCES) $(DEFINES) -DUSE_WIZNET=1 -DUSE_CC3000=1 -B$(BOARD)
 else
-	$(Q)python scripts/build_board_json.py $(WRAPPERSOURCES) $(DEFINES) -B$(BOARD) 
+	$(Q)python scripts/build_board_json.py $(WRAPPERSOURCES) $(DEFINES) -B$(BOARD)
 endif
 
 
@@ -1760,7 +1770,7 @@ $(PLATFORM_CONFIG_FILE): boards/$(BOARD).py scripts/build_platform_config.py
 	$(Q)python scripts/build_platform_config.py $(BOARD) $(HEADERFILENAME)
 
 # skips compiling and linking, if NO_COMPILE is defined
-# Generation of temporary files and setting of wrappersources is already done this moment	
+# Generation of temporary files and setting of wrappersources is already done this moment
 ifndef NO_COMPILE
 
 compile=$(CC) $(CFLAGS) $< -o $@
@@ -1838,7 +1848,7 @@ ifdef USE_CRYPTO
 	$(Q)$(OBJCOPY) --rename-section .rodata=.irom0.text libs/crypto/mbedtls/library/sha1.o
 	$(Q)$(OBJCOPY) --rename-section .rodata=.irom0.text libs/crypto/mbedtls/library/sha256.o
 	$(Q)$(OBJCOPY) --rename-section .rodata=.irom0.text libs/crypto/mbedtls/library/sha512.o
-endif	
+endif
 	$(Q)$(LD) $(OPTIMIZEFLAGS) -nostdlib -Wl,--no-check-sections -Wl,-static -r -o $@ $(OBJS)
 	$(Q)$(OBJCOPY) --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
 
